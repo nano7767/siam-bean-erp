@@ -1,3 +1,4 @@
+import os
 import uuid
 
 import pytest
@@ -30,9 +31,16 @@ def fake_token_user_id(authorization: str | None = Header(default=None)) -> uuid
 
 @pytest.fixture
 def session_factory():
-    engine = create_engine(
-        "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
-    )
+    # Default: in-memory SQLite, no setup needed. Set TEST_DATABASE_URL to an empty
+    # throwaway Postgres to run the same tests with row locks and real constraints.
+    test_url = os.environ.get("TEST_DATABASE_URL")
+    if test_url:
+        engine = create_engine(test_url.replace("postgresql://", "postgresql+psycopg://", 1))
+        Base.metadata.drop_all(engine)
+    else:
+        engine = create_engine(
+            "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
+        )
     Base.metadata.create_all(engine)
     factory = sessionmaker(bind=engine, expire_on_commit=False)
     with factory() as db:
@@ -65,12 +73,12 @@ def as_role(role: str) -> dict[str, str]:
 
 
 def product_by_sku(client: TestClient, sku: str) -> dict:
-    rows = client.get("/products", params={"q": sku}, headers=as_role("admin")).json()["items"]
+    rows = client.get("/products", params={"q": sku, "include_inactive": True}, headers=as_role("admin")).json()["items"]
     return next(row for row in rows if row["sku"] == sku)
 
 
 def customer_by_name(client: TestClient, name: str) -> dict:
-    rows = client.get("/customers", params={"q": name}, headers=as_role("admin")).json()["items"]
+    rows = client.get("/customers", params={"q": name, "include_inactive": True}, headers=as_role("admin")).json()["items"]
     return next(row for row in rows if row["name"] == name)
 
 

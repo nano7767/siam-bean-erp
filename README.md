@@ -275,9 +275,8 @@ Interactive docs at `/docs` on the backend. Summary (full table with roles in th
 
 ## Team: who did what
 
-| Member | Student ID | GitHub | Module owned | Tickets |
-| ------ | ---------- | ------ | ------------ | ------- |
-| _name_ | _id_ | _user_ | Login and dashboard | 01, 07, 08 |
-| _name_ | _id_ | _user_ | Master data | 02, 03 |
-| _name_ | _id_ | _user_ | Sales and invoices | 05, 06, 09 |
-| _name_ | _id_ | _user_ | Stock | 04 |
+Solo project: one member owns every module.
+
+| Member | Student ID | GitHub | Modules owned | Tickets |
+| ------ | ---------- | ------ | ------------- | ------- |
+| _name_ | _id_ | [nano7767](https://github.com/nano7767) | Login and dashboard, master data, stock, sales and invoices | 01–09 |

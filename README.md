@@ -279,4 +279,4 @@ Solo project: one member owns every module.
 
 | Member | Student ID | GitHub | Modules owned | Tickets |
 | ------ | ---------- | ------ | ------------- | ------- |
-| _name_ | _id_ | [nano7767](https://github.com/nano7767) | Login and dashboard, master data, stock, sales and invoices | 01–09 |
+| Sippakorn Vikornvongvanich | 6638242721 | [nano7767](https://github.com/nano7767) | Login and dashboard, master data, stock, sales and invoices | 01–09 |

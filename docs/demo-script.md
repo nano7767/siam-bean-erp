@@ -1,46 +1,50 @@
 # Class 4 demo script (Thu 22 Oct 2026, 17:00)
 
-10 minutes, hard stop: 1 min problem · 6 min live demo · 3 min Q&A. Rehearse with a timer. Every member speaks at least once.
+Solo presenter. 10 minutes, hard stop: 1 min problem · 6 min live demo · 3 min Q&A. Rehearse with a timer at least twice; if a run goes over 7 minutes, drop the optional steps 11–12 first.
 
 ## Before 17:00
 
 - [ ] `cd backend && uv run seed.py --reset`. ARB-1KG is back at **170 kg** and the next invoice is **INV-0001**
-- [ ] Two browser windows on the **deployed URL** (not localhost): window A logged in as **Sales (Nok)**, window B logged in as **Accountant (Fon)**
-- [ ] Third tab: GitHub repo (README, commit history); fourth tab: Supabase Table Editor (`invoices`, `stock_movements`)
-- [ ] Phone ready with the URL open on mobile data
-- [ ] Backup: screenshots / screen recording of the whole flow in case the network fails
+- [ ] Two browser windows on the **deployed URL** (not localhost), side by side: window A logged in as **Sales (Nok)**, window B logged in as **Accountant (Fon)**. Logging in before you start saves a minute.
+- [ ] Extra tabs: GitHub repo (README, commit history), Supabase Table Editor (`invoices`, `stock_movements`), VS Code with the repo open
+- [ ] Phone with the URL open on mobile data
+- [ ] Backup: screenshots or a screen recording of the whole flow in case the network fails
 
-## Minute 0–1: the problem (speaker 1)
+## 0:00–1:00 · The problem
 
-> Siam Bean Co. sells 1 kg bags of coffee to about 80 cafés. Orders come by LINE, sales retype them into a spreadsheet, stock lives in another sheet that is always wrong, invoices are typed in Word and numbered by hand, and nobody knows who still owes money. We built one system where confirming an order moves the stock and issues the invoice in one step, every role only does what it is allowed to, and the owner sees live numbers.
+> Siam Bean Co. is a coffee-bean distributor in Bangkok selling 1 kg bags to about 80 cafés. Today orders come by LINE, sales retype them into a spreadsheet, stock lives in another sheet that is always wrong, invoices are typed in Word and numbered by hand, and nobody knows who still owes money.
+>
+> I built one system on one database: confirming an order takes the stock out and issues the invoice in a single step, each of the four roles can only do what it is allowed to (checked by the server), and the owner sees live numbers on a dashboard. Let me show you Café Lune's order end to end.
 
-## Minute 1–7: live demo (speakers 2 and 3)
+## 1:00–7:00 · Live demo
 
-| # | Window | Do | Say / point at |
-|---|--------|----|----------------|
-| 1 | A (Sales, Nok) | Dashboard | Sales today 0.00, Open invoices 0.00, **Low stock 1** (ROB-1KG 35 < 40: US-2), Stock value |
-| 2 | A | Products | **ARB-1KG on hand 170 kg**; ROB-1KG has the Low stock badge |
-| 3 | A | Sales orders → New → type "lune" → Café Lune → ARB-1KG, **20** | Price 450 is copied from the product; totals 9,000 + 630 VAT = **9,630.00 THB** |
-| 4 | A | Save draft → **Confirm order** → Confirm and issue invoice | "One transaction: stock movement and invoice together." |
-| 5 | A | Products | **ARB-1KG 150 kg** (Stock card shows `SO-0001 −20 → 150`) |
-| 6 | A | Open invoice **INV-0001** | 9,000.00 + 630.00 = **9,630.00 THB**, due in 30 days |
-| 7 | A | Rule failing: New order, Café Lune, ARB-1KG **200** → Save → Confirm | The form already warns; the server answers **"Not enough stock for ARB-1KG"**; stock still 150 |
-| 8 | A | Type `/accounting` in the address bar | **403 Access denied**: Sales cannot see Accounting (US-3) |
-| 9 | B (Accountant, Fon) | Accounting → INV-0001 → Record payment 9,630.00 | Invoice becomes **Paid** (US-4) |
-| 10 | B | Dashboard (Refresh) | **Sales today 9,630.00**, **Open invoices 0.00**: numbers agree on every screen |
-| 11 | Any | (optional, 30 s) Log in as Warehouse, open Sales orders | **403** again; mention `test_roles.py` calls the confirm API as Warehouse and gets 403 |
-| 12 | Any | (bonus, 30 s) Print / Save PDF on INV-0001; log in as the bakery admin | Stretch goals: PDF tax invoice, second company sees none of Siam Bean's data |
+| Time | # | Window | Do | Say |
+|------|---|--------|----|-----|
+| 1:00 | 1 | A (Sales, Nok) | Dashboard | "I'm logged in as Nok from Sales. Sales today is zero, nothing is owed, and one product is low on stock: Robusta, 35 kg against a reorder level of 40. That's US-2." |
+| 1:30 | 2 | A | Products | "Arabica, ARB-1KG, has **170 kg** on hand. Nobody types that number: it's the sum of every stock movement." |
+| 2:00 | 3 | A | Sales orders → New → type "lune" → Café Lune → ARB-1KG, quantity **20** | "Café Lune orders 20 kg. The price, 450, is copied from the product, so a later price change never touches this order. 9,000 plus 7% VAT is **9,630 THB**." |
+| 2:45 | 4 | A | Save draft → **Confirm order** → Confirm and issue invoice | "It's a draft until I confirm. Confirm runs one database transaction: it checks stock, takes 20 kg out and creates the invoice, all or nothing." |
+| 3:15 | 5 | A | Products → ARB-1KG → Stock card | "Stock went from 170 to **150**, and the stock card shows the movement from SO-0001." |
+| 3:45 | 6 | A | Open invoice **INV-0001** | "The invoice was numbered by the server: INV-0001, the same lines, 9,000 plus 630 VAT, **9,630 THB**, due in 30 days because Café Lune has 30-day terms." |
+| 4:15 | 7 | A | New order, Café Lune, ARB-1KG **200** → Save → Confirm | "Now a rule failing: 200 kg when we only have 150. The form warns me, and the server refuses: **'Not enough stock for ARB-1KG'**. Nothing changed; stock is still 150." |
+| 5:00 | 8 | A | Type `/accounting` in the address bar | "Sales is not allowed to see Accounting. The server answers **403** and the app shows access denied. That's US-3." |
+| 5:30 | 9 | B (Accountant, Fon) | Accounting → INV-0001 → Record payment 9,630.00 | "Now as Fon, the accountant: Café Lune pays the full amount, and INV-0001 becomes **Paid**. That's US-4." |
+| 6:00 | 10 | B | Dashboard → Refresh | "Back on the dashboard: sales today **9,630**, open invoices back to **zero**. The same numbers on every screen, computed live." |
+| 6:20 | 11 | B | *(optional)* Log out → Warehouse → open Sales orders | "Warehouse can't touch orders either: 403. My tests call the confirm API directly as Warehouse and expect 403." |
+| 6:40 | 12 | B | *(optional)* Print / Save PDF on INV-0001 | "Two bonus features: the invoice prints as a PDF tax invoice, and a second company, Chiang Mai Bakery, shares the app but can't see any of Siam Bean's data." |
+| 7:00 | | | Stop | "That's the full flow. Happy to take questions." |
 
-## Minute 7–10: Q&A (anyone)
+## 7:00–10:00 · Q&A
 
-Likely questions and where to point:
+Likely questions and what to show:
 
 | Question | Answer / show |
 |---|---|
-| How do you stop two people selling the same beans? | `confirm_order` locks the product rows (`SELECT … FOR UPDATE`) and checks inside one transaction. [ADR 0001](adr/0001-confirm-order-in-one-transaction.md). Tested on Postgres: two 100 kg confirms with 170 on hand → one succeeds. |
-| Where is stock stored? | Nowhere as a number: `SUM(stock_movements.quantity)`. Show `stock_movements` in Supabase. |
-| How are roles enforced? | `Depends(require("admin", "sales"))` on every endpoint, role read from our `users` table after Supabase verifies the token. `tests/test_roles.py` = the permission matrix. |
-| How are invoice numbers generated? | `document_counters` row updated inside the same transaction; a failed confirm rolls it back, so no gaps. |
-| What if the product price changes? | `order_items.unit_price` and the invoice totals are copies. Test: `test_price_change_after_confirm_does_not_change_the_invoice`. |
-| Show the tests / were they first? | `git log --oneline`: first commit is the failing tests; `uv run pytest` → 155 passed. |
-| Where is the spec? | `.scratch/mini-erp/spec.md`, tickets in `.scratch/mini-erp/issues/`, `GLOSSARY.md`. |
+| How do you stop two people selling the same beans? | `confirm_order` in `backend/erp/routers/orders.py` locks the product rows (`SELECT … FOR UPDATE`) and checks inside one transaction. [ADR 0001](adr/0001-confirm-order-in-one-transaction.md). I tested it on Postgres: two 100 kg confirms at the same moment with 170 on hand, and exactly one succeeds. |
+| Where is stock stored? | Nowhere as a number: it's `SUM(stock_movements.quantity)`. Show `stock_movements` in Supabase. |
+| How are roles enforced? | `Depends(require("admin", "sales"))` on every endpoint. Supabase verifies the login token, then the role comes from my `users` table. `tests/test_roles.py` checks the whole permission matrix. |
+| How are invoice numbers generated? | A `document_counters` row is incremented inside the same transaction, so a failed confirm rolls it back and no number is wasted. |
+| What if a product price changes? | The order line and the invoice store their own copies. Test: `test_price_change_after_confirm_does_not_change_the_invoice`. |
+| Show the tests. Were they written first? | `git log --oneline`: the first commit is the failing tests. `uv run pytest` → 155 passed. |
+| Where is the spec? | `.scratch/mini-erp/spec.md`, tickets in `.scratch/mini-erp/issues/`, plus `GLOSSARY.md`. |
+| Does the ER diagram match the database? | README diagram next to the Supabase Table Editor; the tables come from `backend/erp/models.py`. |

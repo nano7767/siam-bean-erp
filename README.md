@@ -259,7 +259,7 @@ The tests were committed before the implementation (see the first commit). `test
 
 ## Deployment (Vercel + Supabase)
 
-1. **Supabase:** create a project (region Singapore). Copy the *Transaction pooler* connection string (port 6543), the project URL, the publishable key and the secret key into `backend/.env`, then run `uv run seed.py` once from your laptop.
+1. **Supabase:** create a project (ours is in Tokyo, `ap-northeast-1`; `backend/vercel.json` runs the API in Vercel's Tokyo region `hnd1` next to it). Copy the *Transaction pooler* connection string (port 6543), the project URL, the publishable key and the secret key into `backend/.env`, then run `uv run seed.py` once from your laptop.
 2. **Backend on Vercel:** New Project → import the repo → Root Directory `backend` → framework FastAPI. Environment variables: `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`, `ALLOWED_ORIGINS` (the frontend URL). Check `https://<backend>.vercel.app/health`.
 3. **Frontend on Vercel:** New Project → same repo → Root Directory `frontend` → framework Vite. Environment variable: `VITE_API_URL=https://<backend>.vercel.app`. `vercel.json` rewrites every path to `index.html`.
 4. Put the frontend URL into the backend's `ALLOWED_ORIGINS` and redeploy the backend.

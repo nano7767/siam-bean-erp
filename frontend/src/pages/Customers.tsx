@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { patch, post, query } from '../api'
 import { useAuth } from '../auth'
+import { Icon } from '../components/icons'
 import { notify } from '../components/toast'
-import { Badge, Empty, ErrorBox, Field, LoadError, Loading, Modal, PageHeader, Pagination } from '../components/ui'
+import { Avatar, Badge, Empty, ErrorBox, Field, LoadError, Loading, Modal, PageHeader, Pagination, SearchInput } from '../components/ui'
 import { terms } from '../format'
 import type { Customer, Page } from '../types'
 import { useApi, useDebounced } from '../useApi'
@@ -36,23 +37,24 @@ export function Customers() {
   return (
     <>
       <PageHeader
+        icon="store"
         title="Customers"
         subtitle="Cafés that buy from Siam Bean. Tax ID is required for Thai tax invoices."
         actions={
           canEdit && (
             <button type="button" className="button" onClick={() => setEditing('new')}>
-              + New customer
+              <Icon name="plus" size={16} />
+              New customer
             </button>
           )
         }
       />
       <div className="toolbar">
-        <input
-          type="search"
+        <SearchInput
           placeholder="Search name or tax ID…"
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value)
+          onChange={(value) => {
+            setSearch(value)
             setPage(1)
           }}
         />
@@ -84,8 +86,13 @@ export function Customers() {
               {data.items.map((c) => (
                 <tr key={c.id} className={c.active ? '' : 'row-inactive'}>
                   <td>
-                    <strong>{c.name}</strong>
-                    {c.address && <div className="muted small">{c.address}</div>}
+                    <div className="name-cell">
+                      <Avatar name={c.name} size="sm" />
+                      <div>
+                        <strong>{c.name}</strong>
+                        {c.address && <div className="muted small">{c.address}</div>}
+                      </div>
+                    </div>
                   </td>
                   <td className="mono">{c.tax_id}</td>
                   <td>{terms(c.payment_terms_days)}</td>

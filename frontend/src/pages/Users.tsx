@@ -1,8 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { patch, post, type Role, type User } from '../api'
 import { useAuth } from '../auth'
+import { Icon } from '../components/icons'
 import { notify } from '../components/toast'
-import { Badge, ErrorBox, Field, LoadError, Loading, Modal, PageHeader } from '../components/ui'
+import { Avatar, Badge, ErrorBox, Field, LoadError, Loading, Modal, PageHeader } from '../components/ui'
 import { ROLE_LABEL } from '../format'
 import { useApi } from '../useApi'
 
@@ -38,11 +39,13 @@ export function Users() {
   return (
     <>
       <PageHeader
+        icon="users"
         title="Users"
         subtitle="Each person has one role. The server checks it on every request."
         actions={
           <button type="button" className="button" onClick={() => setAdding(true)}>
-            + Add user
+            <Icon name="plus" size={16} />
+            Add user
           </button>
         }
       />
@@ -62,7 +65,12 @@ export function Users() {
             {data.map((u) => (
               <tr key={u.id} className={u.active ? '' : 'row-inactive'}>
                 <td>
-                  <strong>{u.name}</strong> {u.id === me?.id && <span className="muted small">(you)</span>}
+                  <div className="name-cell">
+                    <Avatar name={u.name} size="sm" />
+                    <span>
+                      <strong>{u.name}</strong> {u.id === me?.id && <span className="muted small">(you)</span>}
+                    </span>
+                  </div>
                 </td>
                 <td>{u.email}</td>
                 <td>

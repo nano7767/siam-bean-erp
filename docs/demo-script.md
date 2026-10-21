@@ -20,16 +20,16 @@ Solo presenter. 10 minutes, hard stop: 1 min problem · 6 min live demo · 3 min
 
 | Time | # | Window | Do | Say |
 |------|---|--------|----|-----|
-| 1:00 | 1 | A (Sales, Nok) | Dashboard | "I'm logged in as Nok from Sales. Sales today is zero, nothing is owed, and one product is low on stock: Robusta, 35 kg against a reorder level of 40. That's US-2." |
+| 1:00 | 1 | A (Sales, Nok) | Dashboard | "I'm logged in as Nok from Sales. Sales today is zero, nothing is owed, and the stock-health chart shows Robusta in red: 35 kg against a reorder level of 40. That's US-2." |
 | 1:30 | 2 | A | Products | "Arabica, ARB-1KG, has **170 kg** on hand. Nobody types that number: it's the sum of every stock movement." |
 | 2:00 | 3 | A | Sales orders → New → type "lune" → Café Lune → ARB-1KG, quantity **20** | "Café Lune orders 20 kg. The price, 450, is copied from the product, so a later price change never touches this order. 9,000 plus 7% VAT is **9,630 THB**." |
 | 2:45 | 4 | A | Save draft → **Confirm order** → Confirm and issue invoice | "It's a draft until I confirm. Confirm runs one database transaction: it checks stock, takes 20 kg out and creates the invoice, all or nothing." |
 | 3:15 | 5 | A | Products → ARB-1KG → Stock card | "Stock went from 170 to **150**, and the stock card shows the movement from SO-0001." |
-| 3:45 | 6 | A | Open invoice **INV-0001** | "The invoice was numbered by the server: INV-0001, the same lines, 9,000 plus 630 VAT, **9,630 THB**, due in 30 days because Café Lune has 30-day terms." |
+| 3:45 | 6 | A | Open invoice **INV-0001** | "The tracker at the top shows the document flow: draft, confirmed, invoiced, and next paid. The invoice was numbered by the server: INV-0001, the same lines, 9,000 plus 630 VAT, **9,630 THB**, due in 30 days because Café Lune has 30-day terms." |
 | 4:15 | 7 | A | New order, Café Lune, ARB-1KG **200** → Save → Confirm | "Now a rule failing: 200 kg when we only have 150. The form warns me, and the server refuses: **'Not enough stock for ARB-1KG'**. Nothing changed; stock is still 150." |
 | 5:00 | 8 | A | Type `/accounting` in the address bar | "Sales is not allowed to see Accounting. The server answers **403** and the app shows access denied. That's US-3." |
 | 5:30 | 9 | B (Accountant, Fon) | Accounting → INV-0001 → Record payment 9,630.00 | "Now as Fon, the accountant: Café Lune pays the full amount, and INV-0001 becomes **Paid**. That's US-4." |
-| 6:00 | 10 | B | Dashboard → Refresh | "Back on the dashboard: sales today **9,630**, open invoices back to **zero**. The same numbers on every screen, computed live." |
+| 6:00 | 10 | B | Dashboard → Refresh | "Back on the dashboard: sales today **9,630**, open invoices back to **zero**, and today's bar on the sales chart. The same numbers on every screen, computed live." |
 | 6:20 | 11 | B | *(optional)* Log out → Warehouse → open Sales orders | "Warehouse can't touch orders either: 403. My tests call the confirm API directly as Warehouse and expect 403." |
 | 6:40 | 12 | B | *(optional)* Print / Save PDF on INV-0001 | "Two bonus features: the invoice prints as a PDF tax invoice, and a second company, Chiang Mai Bakery, shares the app but can't see any of Siam Bean's data." |
 | 7:00 | | | Stop | "That's the full flow. Happy to take questions." |

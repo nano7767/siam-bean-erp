@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from 'react-router'
 import { query } from '../api'
 import { useAuth } from '../auth'
+import { Icon } from '../components/icons'
 import { Badge, Empty, LoadError, Loading, PageHeader } from '../components/ui'
 import { day, thb } from '../format'
 import type { OrderRow } from '../types'
@@ -25,12 +26,14 @@ export function Orders() {
   return (
     <>
       <PageHeader
+        icon="orders"
         title="Sales orders"
         subtitle="Draft → Confirm: stock goes down and the invoice is issued in one step."
         actions={
           can('admin', 'sales') && (
             <Link to="/orders/new" className="button">
-              + New sales order
+              <Icon name="plus" size={16} />
+              New sales order
             </Link>
           )
         }

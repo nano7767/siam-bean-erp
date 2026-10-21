@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { post, put, query } from '../api'
+import { Icon } from '../components/icons'
 import { notify } from '../components/toast'
 import { ErrorBox, Field, LoadError, Loading, LowStockBadge, PageHeader } from '../components/ui'
 import { qty, terms, thb } from '../format'
@@ -84,6 +85,7 @@ function OrderEditor({ order, products }: { order: Order | null; products: Produ
   return (
     <>
       <PageHeader
+        icon="orders"
         title={order ? `Edit ${order.number}` : 'New sales order'}
         subtitle="Saved as a draft first. Stock only moves when you confirm."
       />
@@ -148,7 +150,8 @@ function OrderEditor({ order, products }: { order: Order | null; products: Produ
             })}
           </div>
           <button type="button" className="button secondary small" onClick={() => setLines((current) => [...current, emptyLine()])}>
-            + Add product
+            <Icon name="plus" size={16} />
+            Add product
           </button>
         </div>
 

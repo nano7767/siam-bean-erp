@@ -2,7 +2,7 @@
 
 One system where sales, stock, invoices and a dashboard share one database, for a small coffee-bean distributor in Bangkok. Built for CU FDE3.
 
-**Live app:** https://_fill-in_.vercel.app · **API docs:** https://_fill-in_.vercel.app/docs
+**Live app:** https://siam-bean-erp-jnqu.vercel.app · **API:** https://siam-bean-erp-five.vercel.app ([docs](https://siam-bean-erp-five.vercel.app/docs), [health](https://siam-bean-erp-five.vercel.app/health))
 
 | Layer    | Tech |
 | -------- | ---- |
@@ -53,7 +53,7 @@ Password for every account: **`SiamBean2026!`** (the login page has one-tap butt
 - [x] Payments: a full payment marks the invoice Paid
 - [x] Dashboard: sales today, open invoices, low-stock count, stock value, all computed live
 - [x] Relational database: the ER diagram below matches the tables in `backend/erp/models.py`
-- [ ] Deployed: _tick after checking the URL on a phone on mobile data_
+- [x] Deployed: https://siam-bean-erp-jnqu.vercel.app (check once more on a phone on mobile data before the demo)
 
 ### Stretch goals (bonus)
 

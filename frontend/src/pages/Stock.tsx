@@ -21,7 +21,7 @@ export function Stock() {
 
   return (
     <>
-      <PageHeader title="Stock" subtitle="Record goods received and stock-count corrections. Sales take stock out automatically." />
+      <PageHeader icon="box" title="Stock" subtitle="Record goods received and stock-count corrections. Sales take stock out automatically." />
       <section className="grid-2">
         <MovementForm kind="in" products={products.data?.items ?? []} onSaved={refresh} />
         <MovementForm kind="adjust" products={products.data?.items ?? []} onSaved={refresh} />

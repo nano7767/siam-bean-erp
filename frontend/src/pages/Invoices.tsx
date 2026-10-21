@@ -14,7 +14,7 @@ export function Invoices() {
 
   return (
     <>
-      <PageHeader title="Invoices" subtitle="Issued automatically when a sales order is confirmed." />
+      <PageHeader icon="invoice" title="Invoices" subtitle="Issued automatically when a sales order is confirmed." />
       <div className="tabs">
         {[
           ['', 'All'],

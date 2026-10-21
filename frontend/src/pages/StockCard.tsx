@@ -15,6 +15,7 @@ export function StockCard() {
   return (
     <>
       <PageHeader
+        icon="box"
         title={product ? `Stock card · ${product.sku}` : 'Stock card'}
         subtitle={
           product && (

@@ -2,12 +2,13 @@ import { useState, type FormEvent } from 'react'
 import { Link, useParams } from 'react-router'
 import { post } from '../api'
 import { useAuth } from '../auth'
+import { Icon } from '../components/icons'
 import { notify } from '../components/toast'
-import { Badge, ErrorBox, Field, LoadError, Loading, PageHeader } from '../components/ui'
+import { Badge, DocFlow, ErrorBox, Field, LoadError, Loading, PageHeader } from '../components/ui'
 import { amount, dateTime, day, METHOD_LABEL, terms, thb } from '../format'
 import type { Invoice } from '../types'
 import { useApi } from '../useApi'
-import { LinesTable } from './OrderDetail'
+import { LinesTable, saleFlow } from './OrderDetail'
 
 export function InvoiceDetail() {
   const { id } = useParams()
@@ -22,6 +23,7 @@ export function InvoiceDetail() {
       <div className="no-print">
         <PageHeader
           title={`Invoice ${invoice.number}`}
+          icon="invoice"
           subtitle={
             <>
               {invoice.overdue ? <Badge status="overdue">Overdue</Badge> : <Badge status={invoice.status} />} · from order{' '}
@@ -30,9 +32,18 @@ export function InvoiceDetail() {
           }
           actions={
             <button type="button" className="button secondary" onClick={() => window.print()}>
-              ⎙ Print / Save PDF
+              <Icon name="printer" size={16} />
+              Print / Save PDF
             </button>
           }
+        />
+        <DocFlow
+          steps={saleFlow({
+            orderNumber: invoice.order.number,
+            orderStatus: invoice.order.status,
+            orderDate: invoice.issue_date,
+            invoice: { number: invoice.number, status: invoice.status },
+          })}
         />
       </div>
 

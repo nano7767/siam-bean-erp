@@ -2,8 +2,9 @@ import { useState, type FormEvent } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { patch, post, query } from '../api'
 import { useAuth } from '../auth'
+import { Icon } from '../components/icons'
 import { notify } from '../components/toast'
-import { Badge, Empty, ErrorBox, Field, LoadError, Loading, LowStockBadge, Modal, PageHeader, Pagination } from '../components/ui'
+import { Badge, Empty, ErrorBox, Field, LoadError, Loading, LowStockBadge, Modal, PageHeader, Pagination, SearchInput } from '../components/ui'
 import { qty, thb } from '../format'
 import type { Page, Product } from '../types'
 import { useApi, useDebounced } from '../useApi'
@@ -36,23 +37,24 @@ export function Products() {
   return (
     <>
       <PageHeader
+        icon="coffee"
         title="Products"
         subtitle="On hand is the sum of all stock movements: nobody types it."
         actions={
           can('admin') && (
             <button type="button" className="button" onClick={() => setEditing('new')}>
-              + New product
+              <Icon name="plus" size={16} />
+              New product
             </button>
           )
         }
       />
       <div className="toolbar">
-        <input
-          type="search"
+        <SearchInput
           placeholder="Search SKU or name…"
           value={search}
-          onChange={(e) => {
-            setSearch(e.target.value)
+          onChange={(value) => {
+            setSearch(value)
             setPage(1)
           }}
         />
@@ -97,7 +99,7 @@ export function Products() {
               {data.items.map((p) => (
                 <tr key={p.id} className={p.active ? '' : 'row-inactive'}>
                   <td className="mono">{p.sku}</td>
-                  <td>{p.name}</td>
+                  <td className="cell-name">{p.name}</td>
                   <td className="num">{thb(p.price)}</td>
                   <td className="num">{thb(p.cost)}</td>
                   <td className="num strong">

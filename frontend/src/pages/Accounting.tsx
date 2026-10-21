@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { Icon } from '../components/icons'
 import { LoadError, Loading, PageHeader, Empty } from '../components/ui'
 import { dateTime, METHOD_LABEL, thb } from '../format'
 import type { InvoiceRow, Payment } from '../types'
@@ -17,14 +18,20 @@ export function Accounting() {
 
   return (
     <>
-      <PageHeader title="Accounting" subtitle="Who still owes us money, and what has been paid." />
+      <PageHeader icon="wallet" title="Accounting" subtitle="Who still owes us money, and what has been paid." />
       <section className="tiles tiles-2">
-        <div className="tile">
+        <div className="tile tile-warn">
+          <span className="tile-icon tone-warn">
+            <Icon name="invoice" size={20} />
+          </span>
           <span className="tile-label">Open receivables</span>
           <span className="tile-value">{thb(owed)}</span>
           <span className="tile-note">{open.data?.length ?? 0} unpaid invoices</span>
         </div>
-        <div className="tile">
+        <div className="tile tile-good">
+          <span className="tile-icon tone-good">
+            <Icon name="wallet" size={20} />
+          </span>
           <span className="tile-label">Payments recorded</span>
           <span className="tile-value">{payments.data.length}</span>
           <span className="tile-note">Latest first below</span>

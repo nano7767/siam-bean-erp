@@ -2,11 +2,33 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 import { post } from '../api'
 import { useAuth } from '../auth'
+import { Icon } from '../components/icons'
 import { notify } from '../components/toast'
-import { Badge, ErrorBox, LoadError, Loading, Modal, PageHeader } from '../components/ui'
-import { day, qty, terms, thb } from '../format'
-import type { Order } from '../types'
+import { Badge, DocFlow, ErrorBox, LoadError, Loading, Modal, PageHeader, type FlowStep } from '../components/ui'
+import { amount, day, qty, terms, thb } from '../format'
+import type { InvoiceStatus, Order, OrderStatus } from '../types'
 import { useApi } from '../useApi'
+
+/** Draft → Confirmed (stock out) → Invoiced → Paid, shared by the order and invoice pages. */
+// eslint-disable-next-line react-refresh/only-export-components
+export function saleFlow(sale: {
+  orderNumber: string
+  orderStatus: OrderStatus
+  orderDate: string
+  invoice: { number: string; status: InvoiceStatus } | null
+}): FlowStep[] {
+  const confirmed = sale.orderStatus === 'confirmed' || sale.orderStatus === 'paid'
+  const paid = sale.orderStatus === 'paid' || sale.invoice?.status === 'paid'
+  const steps: FlowStep[] = [
+    { label: 'Draft', detail: `${sale.orderNumber} · ${day(sale.orderDate)}`, done: true },
+    { label: 'Confirmed', detail: confirmed ? 'Stock taken out' : 'Checks and moves stock', done: confirmed },
+    { label: 'Invoiced', detail: sale.invoice ? `${sale.invoice.number} · 7% VAT` : 'Issued on confirm', done: !!sale.invoice },
+    { label: 'Paid', detail: paid ? 'Receivable cleared' : 'Waiting for payment', done: paid },
+  ]
+  const next = steps.find((step) => !step.done)
+  if (next && sale.orderStatus !== 'cancelled') next.current = true
+  return steps
+}
 
 interface ConfirmResult {
   order: Order
@@ -59,6 +81,7 @@ export function OrderDetail() {
     <>
       <PageHeader
         title={`Sales order ${order.number}`}
+        icon="orders"
         subtitle={
           <>
             <Badge status={order.status} /> · {day(order.order_date)} · created by {order.created_by_name}
@@ -71,22 +94,31 @@ export function OrderDetail() {
                 Cancel order
               </button>
               <Link to={`/orders/${order.id}/edit`} className="button secondary">
+                <Icon name="edit" size={16} />
                 Edit
               </Link>
               <button type="button" className="button" onClick={() => setAsking(true)} disabled={busy}>
+                <Icon name="check" size={16} />
                 Confirm order
               </button>
             </>
           )
         }
       />
+      <DocFlow
+        cancelled={order.status === 'cancelled'}
+        steps={saleFlow({ orderNumber: order.number, orderStatus: order.status, orderDate: order.order_date, invoice: order.invoice })}
+      />
       <ErrorBox error={actionError} />
       {issued && (
         <div className="success-box">
-          <strong>Order confirmed.</strong> Stock has been reduced and invoice{' '}
-          <Link to={`/invoices/${issued.id}`}>{issued.number}</Link> was issued for {thb(issued.total)}.
+          <Icon name="check" size={18} strokeWidth={2.5} />
+          <span>
+            <strong>Order confirmed.</strong> Stock has been reduced and invoice{' '}
+            <Link to={`/invoices/${issued.id}`}>{issued.number}</Link> was issued for {thb(issued.total)}.
+          </span>
           <Link to={`/invoices/${issued.id}`} className="button small">
-            Open {issued.number} →
+            Open {issued.number} <Icon name="arrowRight" size={14} />
           </Link>
         </div>
       )}
@@ -148,41 +180,44 @@ export function LinesTable({ order }: { order: Pick<Order, 'lines' | 'subtotal' 
       <table className="lines">
         <thead>
           <tr>
-            <th>SKU</th>
             <th>Product</th>
             <th className="num">Qty</th>
-            <th className="num">Unit price</th>
-            <th className="num">Amount</th>
+            <th className="num">Unit price (THB)</th>
+            <th className="num">Amount (THB)</th>
           </tr>
         </thead>
         <tbody>
           {order.lines.map((l) => (
             <tr key={l.id}>
-              <td className="mono">{l.sku}</td>
-              <td>{l.name}</td>
+              <td>
+                <span className="line-product">
+                  <strong>{l.name}</strong>
+                  <span className="mono muted">{l.sku}</span>
+                </span>
+              </td>
               <td className="num">
                 {qty(l.quantity)} {l.unit}
               </td>
-              <td className="num">{thb(l.unit_price)}</td>
-              <td className="num">{thb(l.line_total)}</td>
+              <td className="num">{amount(l.unit_price)}</td>
+              <td className="num">{amount(l.line_total)}</td>
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr>
-            <td colSpan={4} className="num">
+            <td colSpan={3} className="num">
               Subtotal
             </td>
-            <td className="num">{thb(order.subtotal)}</td>
+            <td className="num">{amount(order.subtotal)}</td>
           </tr>
           <tr>
-            <td colSpan={4} className="num">
+            <td colSpan={3} className="num">
               VAT 7%
             </td>
-            <td className="num">{thb(order.vat)}</td>
+            <td className="num">{amount(order.vat)}</td>
           </tr>
           <tr className="grand">
-            <td colSpan={4} className="num">
+            <td colSpan={3} className="num">
               Total
             </td>
             <td className="num">{thb(order.total)}</td>
